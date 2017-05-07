@@ -3,7 +3,7 @@ from pandas_datareader import data, wb
 import datetime
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter, WeekdayLocator, DayLocator, MONDAY, date2num
-from matplotlib.finance import candlestick_ohlc
+from matplotlib.finance import candlestick_ohlc, quotes_historical_yahoo_ohlc
 import numpy as np
 
 # 开始时间
@@ -118,6 +118,45 @@ def pandas_candlestick_ohlc(dat, stick="day", otherseries=None):
 
 # 调用绘制蜡烛图的函数
 # pandas_candlestick_ohlc(apple)
+
+def pandas_simple_candlestick_ohlc():
+    # 开始时间
+    start = datetime.datetime(2017, 1, 1)
+    # 结束时间
+    end = datetime.date.today()
+
+    # 沪市
+    ticker_ss = '600000.ss' 
+    # 深市
+    ticker_sz = '000001.sz'
+    # 港股 
+    ticker_hk = '0700.hk'
+    # 获取数据
+    quotes = quotes_historical_yahoo_ohlc(ticker_sz, start, end)
+    fig, ax= plt.subplots()
+    fig.subplots_adjust(bottom=0.2)
+
+    # 设置主要刻度的显示格式
+    weekFormatter = DateFormatter('%m-%d-%Y')
+    ax.xaxis.set_major_formatter(weekFormatter)
+    # 设置主要刻度Locator，将major ticks设在星期一
+    mondays = WeekdayLocator(MONDAY)
+    ax.xaxis.set_major_locator(mondays)
+    # 设置次要刻度Locator，将minor ticks设在每日
+    alldays = DayLocator()
+    ax.xaxis.set_minor_locator(alldays)
+
+    # 注意，ohlc代表o开盘价、h最高价、l最低价、c收盘价
+    candlestick_ohlc(ax, quotes, width=0.6, colorup='r', colordown='g')
+
+    ax.grid(True)
+    ax.xaxis_date()
+    ax.autoscale_view()
+    plt.setp(plt.gca().get_xticklabels(), rotation=45, horizontalalignment='right')
+    plt.show()
+
+# 调用简单的绘制蜡烛图的函数
+# pandas_simple_candlestick_ohlc()
 
 # 读取多家公司股票数据
 microsoft = data.DataReader("MSFT", "yahoo", start, end)
