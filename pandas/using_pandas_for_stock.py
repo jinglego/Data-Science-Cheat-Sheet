@@ -1,3 +1,7 @@
+'''
+http://blog.yhat.com/posts/stock-data-python.html
+'''
+
 import pandas as pd
 from pandas_datareader import data, wb
 import datetime
